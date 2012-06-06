@@ -1,12 +1,12 @@
 package org.jenkinsci.plugins.unity3d;
 
+import static java.util.Arrays.asList;
+import static org.junit.Assert.assertEquals;
 import hudson.util.ArgumentListBuilder;
-import org.junit.Test;
 
 import java.util.List;
 
-import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
+import org.junit.Test;
 
 /**
  * @author Jerome Lacoste
@@ -50,7 +50,14 @@ public class Unity3dBuilderTest {
 
     private void ensureCreateCommandlineArgs(List<String> expectedArgs1) {
         Unity3dBuilder builder = new Unity3dBuilder("Unity 3.5", argLine);
-        ArgumentListBuilder commandlineArgs = builder.createCommandlineArgs(exe, moduleRootRemote);
-        assertEquals(expectedArgs1, commandlineArgs.toList());
+        ArgumentListBuilder commandlineArgs;
+		try {
+			commandlineArgs = builder.createCommandlineArgs(exe, moduleRootRemote);
+			assertEquals(expectedArgs1, commandlineArgs.toList());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
     }
 }
