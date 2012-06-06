@@ -128,9 +128,6 @@ public class Unity3dBuilder extends Builder {
 
         FilePath moduleRoot = build.getModuleRoot();
         String moduleRootRemote = moduleRoot.getRemote();
-        if (!moduleRoot.child("Assets").exists()) {
-            throw new PerformException(Messages.Unity3d_MissingAssetsNotAUnity3dProjectDirectory(moduleRootRemote));
-        }
 
         return createCommandlineArgs(exe, moduleRootRemote);
     }
@@ -147,13 +144,42 @@ public class Unity3dBuilder extends Builder {
         return ui;
     }
 
-    ArgumentListBuilder createCommandlineArgs(String exe, String moduleRootRemote) {
+    ArgumentListBuilder createCommandlineArgs(String exe, String moduleRootRemote) throws PerformException {
         ArgumentListBuilder args = new ArgumentListBuilder();
         args.add(exe);
+        
         if (!argLine.contains("-projectPath")) {
            args.add("-projectPath", moduleRootRemote);
         }
-        args.add(QuotedStringTokenizer.tokenize(argLine));
+        
+        String[] tokenizedArgs = QuotedStringTokenizer.tokenize(argLine);
+        
+        /* TODO
+        FilePath projectPath = null;
+        for (int i = 0; i < tokenizedArgs.length; i++){
+        	if (tokenizedArgs[i].trim() == "-projectPath" && tokenizedArgs.length >= i+1)
+        	{
+        		projectPath = new FilePath(new File(tokenizedArgs[i+1])); 
+        	}
+        	System.out.println("Command line token: " + tokenizedArgs[i]);
+        }
+        
+        // check for valid unity3d folder by checking for assets folder
+        boolean assetFolderNotFound = false;
+        try {
+			if (projectPath == null || (projectPath != null && !projectPath.child("Assets").exists())) {
+				assetFolderNotFound = true;
+			}
+		} catch (Exception e) {
+			// Auto-generated catch block
+			assetFolderNotFound = true;
+		} 
+        
+        if (assetFolderNotFound)
+        	throw new PerformException(Messages.Unity3d_MissingAssetsNotAUnity3dProjectDirectory(projectPath));
+        */
+        
+        args.add(tokenizedArgs);
         return args;
     }
 
